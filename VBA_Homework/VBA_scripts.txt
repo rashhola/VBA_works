@@ -1,0 +1,41 @@
+Sub VbaH()
+ For Each ws In Worksheets
+    ws.Cells(1, 9).Value = "Ticker"
+    ws.Cells(1, 10).Value = "Yearly_Change"
+    ws.Cells(1, 11).Value = "Percent_Change"
+    ws.Cells(1, 12).Value = "Total_volume"
+    first_row = 2
+    Main_row = 2
+    Total_volume = 0
+    
+   Lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    For Row = first_row To Lastrow
+        Openingprice = (ws.Cells(first_row, 3).Value)
+        Total_volume = Total_volume + ws.Cells(Row, 7).Value
+        currentBrand = ws.Cells(Row, 1)
+        If ws.Cells(Row + 1, 1) <> currentBrand Then
+         ending_row = Row
+         Closingprice = (ws.Cells(ending_row, 6).Value)
+         Yearly_Change = Closingprice - Openingprice
+         If Openingprice = 0 Then
+         Percent_Change = 0
+         Else
+         Percent_Change = (Yearly_Change / Openingprice)
+         End If
+         ws.Cells(Main_row, 10).Value = Yearly_Change
+         ws.Cells(Main_row, 9).Value = currentBrand
+         ws.Cells(Main_row, 11).Value = Percent_Change
+        ws.Cells(Main_row, 12).Value = Total_volume
+            If Yearly_Change <= 0 Then
+                ws.Cells(Main_row, 10).Interior.Color = RGB(255, 0, 0)
+            Else
+             ws.Cells(Main_row, 10).Interior.Color = RGB(0, 255, 0)
+            End If
+            ws.Cells(Main_row, 11).NumberFormat = "0.00%"
+        first_row = Row + 1
+        Total_volume = 0
+        Main_row = Main_row + 1
+        End If
+    Next Row
+Next ws
+End Sub
